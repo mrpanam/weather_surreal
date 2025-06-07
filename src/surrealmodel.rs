@@ -21,6 +21,16 @@ pub struct Temperature {
     pub date: u64,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Wind {
+    pub city: String,
+    pub country: String,
+    pub deg: u32,
+    pub speed: f64,
+    pub gust: Option<f64>,
+    pub date: u64,
+}
+
 impl Sun {
     pub fn format_sunrise(&self) -> String {
         DateTime::<Utc>::from_timestamp(self.sunrise as i64, 0)

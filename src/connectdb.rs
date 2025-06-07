@@ -1,4 +1,4 @@
-use crate::surrealmodel::{Sun, Temperature};
+use crate::surrealmodel::Sun;
 use crate::weathermodel::WeatherResponse;
 use std::error::Error;
 use std::sync::LazyLock;
@@ -6,7 +6,11 @@ use surrealdb::Surreal;
 use surrealdb::engine::remote::ws::{Client, Ws};
 use surrealdb::opt::auth::Root;
 
-static DB: LazyLock<Surreal<Client>> = LazyLock::new(Surreal::init);
+pub static DB: LazyLock<Surreal<Client>> = LazyLock::new(Surreal::init);
+
+pub fn get_db() -> &'static Surreal<Client> {
+    &DB
+}
 
 pub struct Database {
     connected: bool,
@@ -83,49 +87,6 @@ impl Database {
                     // The data was likely saved successfully, just return value parsing failed
                     println!(
                         "Sunset data saved successfully for {} (with return value parsing issue)",
-                        data.name
-                    );
-                    Ok(())
-                } else {
-                    Err(e.into())
-                }
-            }
-        }
-    }
-
-    pub async fn save_temperature_data(
-        &self,
-        data: &WeatherResponse,
-    ) -> Result<(), Box<dyn Error>> {
-        // Create Temperature struct with data from weather response
-        let temperature_data = Temperature {
-            city: data.name.clone(),
-            country: data.sys.country.clone(),
-            temp: data.main.temp,
-            feels_like: data.main.feels_like,
-            temp_min: data.main.temp_min,
-            temp_max: data.main.temp_max,
-            date: data.dt,
-        };
-
-        match DB
-            .create::<Option<Temperature>>("temperature")
-            .content(temperature_data)
-            .await
-        {
-            Ok(_) => {
-                println!("Temperature data saved successfully for {}", data.name);
-                Ok(())
-            }
-            Err(e) => {
-                // Check if it's just a deserialization error of the return value
-                let error_msg = e.to_string();
-                if error_msg.contains("Serialization error")
-                    || error_msg.contains("failed to deserialize")
-                {
-                    // The data was likely saved successfully, just return value parsing failed
-                    println!(
-                        "Temperature data saved successfully for {} (with return value parsing issue)",
                         data.name
                     );
                     Ok(())
