@@ -1,13 +1,13 @@
 use crate::connectdb::Database;
 use crate::temperature::save_temperature_data;
-use crate::wind::save_wind_data;
-mod cities;
 mod connectdb;
 mod request;
 mod surrealmodel;
 mod weathermodel;
 mod temperature;
 mod wind;
+mod cities;
+
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -35,7 +35,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             // Save wind data
             for city_weather in &weather_data {
-                save_wind_data(city_weather).await?;
+                wind::save_wind_data_simple(city_weather).await?;
             }
         }
         None => {

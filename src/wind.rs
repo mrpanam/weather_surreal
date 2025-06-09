@@ -34,3 +34,19 @@ pub async fn save_wind_data(data: &WeatherResponse) -> Result<(), Box<dyn Error>
         }
     }
 } 
+
+pub async fn save_wind_data_simple(data: &WeatherResponse) -> Result<(), Box<dyn Error>> {
+    let wind_data = Wind {
+        city: data.name.clone(),
+        country: data.sys.country.clone(),
+        deg: data.wind.deg,
+        speed: data.wind.speed,
+        gust: data.wind.gust,
+        date: data.dt,
+    };
+
+    get_db().create::<Option<Wind>>("wind").content(wind_data).await?;
+   
+    Ok(())
+           
+} 
