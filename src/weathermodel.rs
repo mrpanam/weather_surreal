@@ -15,7 +15,7 @@ pub struct WeatherResponse {
     pub timezone: u32,
     pub visibility: u32,
     pub weather: Vec<Weather>,
-    pub wind: Wind,
+    pub wind: Wind,    
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rain: Option<Rain>,
 }
@@ -46,11 +46,11 @@ pub struct Main {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Sys {
     pub country: String,
-    pub id: u32,
+    pub id: Option<u32>,
     pub sunrise: u64,
     pub sunset: u64,
     #[serde(rename = "type")]
-    pub type_id: u32,
+    pub type_id: Option<u32>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

@@ -15,6 +15,7 @@ pub async fn save_temperature_data(db: &Surreal<Client>, data: &WeatherResponse)
         temp_max: data.main.temp_max,
         date: data.dt,
     };
+    println!("Temperature data: {}", serde_json::to_string_pretty(&temperature_data).unwrap());
 
     match db
         .create::<Option<Temperature>>("temperature")

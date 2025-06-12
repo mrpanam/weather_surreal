@@ -18,10 +18,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match weather_response {
         Some(weather_data) => {
-            /*println!(
+            println!(
                 "Weather response received for {} cities",
                 weather_data.len()
-            );*/
+            );
 
             // Reuse the existing database connection
             // Save full weather data to weather table
@@ -29,7 +29,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 db.save_weather_data(city_weather).await?;
             }*/
 
-            /*for city_weather in &weather_data {
+            for city_weather in &weather_data {
                 db.save_sunset_data(city_weather).await?;
             }
             // Save temperature data to temperature table
@@ -39,7 +39,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             // Save wind data
             for city_weather in &weather_data {
                 wind::save_wind_data(db.db, city_weather).await?;
-            }*/
+            }
         }
         None => {
             println!("No weather data received from API");
