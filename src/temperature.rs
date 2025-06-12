@@ -1,9 +1,11 @@
-use crate::connectdb::get_db;
+
 use crate::surrealmodel::Temperature;
 use crate::weathermodel::WeatherResponse;
 use std::error::Error;
+use surrealdb::Surreal;
+use surrealdb::engine::remote::ws::Client;
 
-pub async fn save_temperature_data(data: &WeatherResponse) -> Result<(), Box<dyn Error>> {
+pub async fn save_temperature_data(db: &Surreal<Client>, data: &WeatherResponse) -> Result<(), Box<dyn Error>> {
     let temperature_data = Temperature {
         city: data.name.clone(),
         country: data.sys.country.clone(),
@@ -14,7 +16,7 @@ pub async fn save_temperature_data(data: &WeatherResponse) -> Result<(), Box<dyn
         date: data.dt,
     };
 
-    match get_db()
+    match db
         .create::<Option<Temperature>>("temperature")
         .content(temperature_data)
         .await
