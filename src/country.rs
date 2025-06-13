@@ -1,16 +1,9 @@
 use serde::{Deserialize, Serialize};
-
+use crate::surrealmodel::Country;
 use surrealdb::RecordId;
 use std::error::Error;
 use crate::connectdb::get_db;
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
-#[serde(rename_all = "camelCase")]
-pub struct Country {
-    pub id: Option<RecordId>,
-    pub name: String,
-    pub code: String,
-}
 
 impl Country {
     /// Create a new country

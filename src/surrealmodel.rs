@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use surrealdb::RecordId;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Sun {
@@ -9,11 +10,39 @@ pub struct Sun {
     pub sunset: u64,
     pub date: u64,
 }
+#[derive(Deserialize, Serialize, Debug)]
+pub struct City {
+    pub id: Option<RecordId>,
+    pub country: RecordId,
+    pub name: String,
+    pub lon: f32,
+    pub lat: f32,
+}
+
+impl City {
+    /// Creates a RecordId from a city name by converting it to lowercase and replacing spaces with underscores
+    pub fn create_id(name: &str) -> RecordId {
+        let id_str = name.to_lowercase()
+            .replace(' ', "_")
+            .replace("-", "_")
+            .replace("è", "e")
+            .replace("é", "e");
+        RecordId::from(("city", id_str.as_str()))
+    }
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Country {
+    pub id: Option<RecordId>,
+    pub name: String,
+    pub code: String,
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Temperature {
-    pub city: String,
-    pub country: String,
+    pub city: RecordId,
+    //pub country: RecordId,
     pub temp: f64,
     pub feels_like: f64,
     pub temp_min: f64,
@@ -71,9 +100,9 @@ impl Temperature {
 
     pub fn format_summary(&self) -> String {
         format!(
-            "City: {}, {}\nDate: {}\nTemperature: {:.1}°C (feels like {:.1}°C)\nMin: {:.1}°C, Max: {:.1}°C",
+            "City: {},\nDate: {}\nTemperature: {:.1}°C (feels like {:.1}°C)\nMin: {:.1}°C, Max: {:.1}°C",
             self.city,
-            self.country,
+            //self.country,
             self.format_date(),
             self.temp,
             self.feels_like,

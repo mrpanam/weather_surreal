@@ -1,19 +1,16 @@
-use crate::connectdb::Database;
-use crate::temperature::save_temperature_data;
+mod cities;
 mod connectdb;
 mod request;
 mod surrealmodel;
-mod weathermodel;
 mod temperature;
+mod weathermodel;
 mod wind;
-mod cities;
-
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize database connection
     let db = connectdb::Database::new().await?;
-    
+
     let weather_response = request::fetch_weather_for_all_cities_typed(db.db).await;
 
     match weather_response {
