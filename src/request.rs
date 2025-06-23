@@ -3,8 +3,8 @@ use crate::weathermodel::WeatherResponse;
 use reqwest::Client;
 use surrealdb::{Surreal, engine::remote::ws::Client as DbClient};
 
-pub async fn fetch_weather_for_all_cities_typed(db: &Surreal<DbClient>) -> Option<Vec<WeatherResponse>> {
-    let cities = match cities::get_cities_france(db).await {
+pub async fn fetch_weather_for_french_cities(db: &Surreal<DbClient>) -> Option<Vec<WeatherResponse>> {
+    let cities = match cities::get_cities_fr(db).await {
         Ok(cities) => cities,
         Err(e) => {
             eprintln!("Failed to fetch cities: {}", e);

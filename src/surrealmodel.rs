@@ -4,15 +4,16 @@ use surrealdb::RecordId;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Sun {
-    pub city: String,
-    pub country: String,
+    pub city: String,    
     pub sunrise: u64,
     pub sunset: u64,
     pub date: u64,
 }
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct City {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<RecordId>,
+    #[serde(skip_serializing)]
     pub country: RecordId,
     pub name: String,
     pub lon: f32,
@@ -30,6 +31,23 @@ impl City {
         RecordId::from(("city", id_str.as_str()))
     }
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct MainWeather {
+    pub id: Option<RecordId>,
+    pub city: RecordId,   
+    pub temp: f64,
+    pub feels_like: f64,
+    pub temp_min: f64,
+    pub temp_max: f64,
+    pub pressure: u32,
+    pub humidity: u32,
+    pub sea_level: u32,
+    pub grnd_level: u32,
+    pub date: u64,
+}
+
+
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -81,9 +99,8 @@ impl Sun {
 
     pub fn format_summary(&self) -> String {
         format!(
-            "City: {}, {}\nDate: {}\nSunrise: {}\nSunset: {}",
-            self.city,
-            self.country,
+            "City: {},\nDate: {}\nSunrise: {}\nSunset: {}",
+            self.city,            
             self.format_date(),
             self.format_sunrise(),
             self.format_sunset()
